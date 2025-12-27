@@ -8,8 +8,9 @@
     <a href="{{ route('about') }}">About</a> |
 
     @if($isAdmin)
-    <a href="#">Admin_Dashboard</a> |
-
+    <a href="{{ route('admin_dashboard') }}">Admin_Dashboard</a> |
+    <a href="{{ route('admin_profile') }}">Admin Profile</a> |
+    <a href="{{ route('admin_logout') }}">Logout</a>
 
 
     @elseif($isUser)
@@ -18,8 +19,8 @@
     <a href="{{ route('logout') }}">Logout</a>
 
     @else
-    <a href="#">Admin Login</a>|
+    <a href="{{ route('admin_login') }}">Admin Login</a>|
     <a href="{{ route('registration') }}">User Registration</a> |
-    <a href="{{ route('login') }}">User Login</a>
+    <a href="{{ route('user_login') }}">User Login</a>
     @endif
 </div>

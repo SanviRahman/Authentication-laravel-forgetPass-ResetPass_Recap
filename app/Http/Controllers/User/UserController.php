@@ -55,9 +55,7 @@ class UserController extends Controller
 
         //Mail send
         Mail::to($request->email)->send(new Websitemail($subject, $body, $verification_link));
-
-        return redirect()->back()
-            ->with('success', 'Registration successful! Please check your email to verify your account.');
+        return redirect()->back()->with('success', 'Registration successful! Please check your email to verify your account.');
     }
 
     //User Verification
@@ -65,13 +63,13 @@ class UserController extends Controller
     {
         $user = User::where('email', $email)->where('token', $token)->first();
         if (! $user) {
-            return redirect()->route('login')->with('error', 'Invalid token or email');
+            return redirect()->route('user_login')->with('error', 'Invalid token or email');
         }
         $user->token  = '';
         $user->status = 1;
         $user->save();
 
-        return redirect()->route('login')->with('success', 'Email verification successful. You can login now.');
+        return redirect()->route('user_login')->with('success', 'Email verification successful. You can login now.');
     }
 
     //User Login
@@ -103,7 +101,7 @@ class UserController extends Controller
     public function logout()
     {
         Auth::guard('web')->logout();
-        return redirect()->route('login')->with('Logout Successfully');
+        return redirect()->route('user_login')->with('Logout Successfully');
     }
 
     //Forget password
@@ -142,7 +140,7 @@ class UserController extends Controller
     {
         $user = User::where('email', $email)->where('token', $token)->first();
         if (! $user) {
-            return redirect()->route('login', 'Invalid token or email');
+            return redirect()->route('user_login', 'Invalid token or email');
         }
         return view('user.reset_password', compact('token', 'email'));
     }
@@ -157,7 +155,7 @@ class UserController extends Controller
         $user = User::where('email', $email)->where('token', $token)->first();
 
         if (! $user) {
-            return redirect()->route('login')->with('error', 'Invalid or expired reset link.');
+            return redirect()->route('user_login')->with('error', 'Invalid or expired reset link.');
         }
 
         // শুধুমাত্র ভ্যালিড হলে পাসওয়ার্ড আপডেট করো
@@ -165,7 +163,7 @@ class UserController extends Controller
         $user->token    = '';
         $user->update();
 
-        return redirect()->route('login')->with('success', 'Password reset successfully. Please login.');
+        return redirect()->route('user_login')->with('success', 'Password reset successfully. Please login.');
     }
 
     //User Profile

@@ -14,7 +14,7 @@
 @endif
 
 
-<form action="{{ route('reset_password_submit', ['token' => $token, 'email' => $email]) }}" method="post">
+<form action="{{ route('admin_reset_password_submit', ['token' => $token, 'email' => $email]) }}" method="post">
     @csrf
 
     <!-- New Password -->
