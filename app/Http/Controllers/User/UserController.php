@@ -16,6 +16,7 @@ class UserController extends Controller
         return view('user.dashboard');
     }
 
+    //User Registration
     public function registration()
     {
         return view('user.registration');
@@ -59,6 +60,7 @@ class UserController extends Controller
             ->with('success', 'Registration successful! Please check your email to verify your account.');
     }
 
+    //User Verification
     public function registration_verify($token, $email)
     {
         $user = User::where('email', $email)->where('token', $token)->first();
@@ -72,6 +74,7 @@ class UserController extends Controller
         return redirect()->route('login')->with('success', 'Email verification successful. You can login now.');
     }
 
+    //User Login
     public function login()
     {
         return view('user.login');
@@ -103,6 +106,7 @@ class UserController extends Controller
         return redirect()->route('login')->with('Logout Successfully');
     }
 
+    //Forget password
     public function forget_password()
     {
         return view('user.forget_password');
@@ -133,6 +137,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Reset password link has been sent to your email.');
     }
 
+    //Reset Passwaord
     public function reset_password($token, $email)
     {
         $user = User::where('email', $email)->where('token', $token)->first();
@@ -142,7 +147,7 @@ class UserController extends Controller
         return view('user.reset_password', compact('token', 'email'));
     }
 
-    public function reset_password_submit(Request $request,$token,$email)
+    public function reset_password_submit(Request $request, $token, $email)
     {
         $request->validate([
             'password'              => 'required',
@@ -161,5 +166,60 @@ class UserController extends Controller
         $user->update();
 
         return redirect()->route('login')->with('success', 'Password reset successfully. Please login.');
+    }
+
+    //User Profile
+    public function profile()
+    {
+        return view('user.profile');
+    }
+
+    public function profile_submit(Request $request)
+    {
+        //Get current user
+        $user = Auth::guard('web')->user();
+
+        $request->validate([
+            'email' => 'required',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+        ]);
+
+        //Handle photo upload
+        if ($request->hasFile('photo')) {
+            $request->validate([
+                'photo' => 'image|mimes:jpeg,png,gif,svg|max:5120',
+            ]);
+
+            $final_name = 'user_' . time() . '.' . $request->photo->extension();
+
+            // Delete old photo if exists
+            if ($user->photo != '' && file_exists(public_path('uploads/' . $user->photo))) {
+                unlink(public_path('uploads/' . $user->photo));
+            }
+
+            $request->photo->move(public_path('uploads'), $final_name);
+            $user->photo = $final_name;
+        }
+        if ($request->filled('password')) {
+            $request->validate([
+                'password' => 'required|min:6|confirmed',
+            ]);
+            $user->password = Hash::make($request->password);
+        }
+
+        // Update other fields
+        $user->name    = $request->name;
+        $user->email   = $request->email;
+        $user->phone   = $request->phone;
+        $user->address = $request->address;
+        $user->city    = $request->city;
+        $user->country = $request->country;
+        $user->state   = $request->state;
+        $user->zip     = $request->zip;
+
+        $user->save();
+
+        return redirect()->back()->with('success', 'Profile updated successfully');
+
     }
 }

@@ -11,6 +11,8 @@ Route::get('/about',[FrontController::class,'about'])->name('about');
 //User
 Route::middleware('user')->group(function(){
     Route::get('/dashboard',[UserController::class,'dashboard'])->name('dashboard');
+    Route::get('/profile',[UserController::class,'profile'])->name('profile');
+    Route::post('/profile',[UserController::class,'profile_submit'])->name('profile_submit');
     Route::get('/logout',[UserController::class,'logout'])->name('logout');
 });
 

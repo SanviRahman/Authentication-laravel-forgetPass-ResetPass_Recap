@@ -13,7 +13,8 @@
 
 
     @elseif($isUser)
-    <a href="{{ route('dashboard') }}">User_Dashboard</a> |
+    <a href="{{ route('dashboard') }}">User Dashboard</a> |
+    <a href="{{ route('profile') }}">User Profile</a> |
     <a href="{{ route('logout') }}">Logout</a>
 
     @else
