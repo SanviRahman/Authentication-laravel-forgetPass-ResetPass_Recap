@@ -42,3 +42,6 @@ Route::get('/admin/forget_password',[AdminController::class,'admin_forget_passwo
 Route::post('/admin/forget_password',[AdminController::class,'admin_forget_password_submit'])->name('admin_forget_password_submit');
 Route::get('/admin/reset_password/{token}/{email}',[AdminController::class,'admin_reset_password'])->name('admin_reset_password');
 Route::post('/admin/reset_password/{token}/{email}',[AdminController::class,'admin_reset_password_submit'])->name('admin_reset_password_submit');
+Route::fallback(function(){
+    return view('errors.404');
+});
